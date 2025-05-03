@@ -86,6 +86,12 @@ class DatabaseManager:
                 m = sig
                 res = 'p'
                 return res
+        
+    def delete_use(self, user_id, user_name):
+        conn = sqlite3.connect(self.database)
+        with conn:
+            cur = conn.cursor()
+            cur.execute('UPDATE results SET human = 0, sign = 0, tech = 0, nature = 0, paint = 0 WHERE user_id = ? AND user_name = ?', (user_id, user_name,))
             
 
 que = {'Разрабатывать компьютерные программы и алгоритмы': 'sign', 'Вести занятия в фитнес-зале': 'human', 'Обрабатывать фотографии с помощью компьютерных программ': '', 'Управлять каким-либо видом техники (автомобиль, самолет, мотоцикл)': 'tech', 
