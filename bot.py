@@ -6,7 +6,7 @@ bot = telebot.TeleBot(token)
 manager = DatabaseManager(database)
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я бот, который поможет тебе в выборе профессии, если ты не знаешь, что делать, или устал от нынешней. Я тебе помогу с пмощью теста на профориентацию!".format(message.from_user))
+    bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я бот, который поможет тебе в выборе профессии, если ты не знаешь, что делать, или устал от нынешней. Я тебе помогу с помощью теста на профориентацию! Для начала теста отправляй команду /test".format(message.from_user))
     bot.register_next_step_handler(message, func)
 
 @bot.message_handler(commands=['test'])
@@ -17,6 +17,7 @@ def func(message):
     user_id = message.from_user.id
     user_name = message.from_user.username
     manager.add_user(user_id, user_name)
+    bot.send_message(message.chat.id, text="На вопросы можешь отвечать, нажимая на кнопки или отправляя в сообщения 1 или 2. Начинаем?".format(message.from_user))
     bot.register_next_step_handler(message, show)
 
 @bot.message_handler()
@@ -30,14 +31,13 @@ def show(message):
     markup.add(btn1, btn2)
     bot.send_message(message.chat.id, text="Ты бы предпочёл: ", reply_markup=markup)
     text = message.text
-    if(text == tuple(que.items())[n][0]):
+    if(text == tuple(que.items())[n][0]) or text == '1':
         res = que.get(tuple(que.items())[n][0])                  
     else:
         res = que.get(tuple(que.items())[n+1][0])                  
     manager.add_res(user_id, user_name, res)
     n += 2
     m += 1
-    print(m)
     if m < 40:
         bot.register_next_step_handler(message, show)
     else:
